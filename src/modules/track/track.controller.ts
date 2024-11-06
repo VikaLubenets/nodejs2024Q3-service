@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 
-@Controller('Users')
-export class UserController {
+@Controller('Track')
+export class TrackController {
   @Get()
   findAll(): string {
     return 'This action returns all cats';
