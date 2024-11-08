@@ -1,20 +1,21 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { CreateUserDto, UpdatePasswordDto, User } from './type';
+import { User } from './type';
 import { v4 as uuidv4 } from 'uuid';
+import { CreateUserDto, UpdatePasswordDto } from './dto';
 
 @Injectable()
 export class UserService {
   private storage: User[] = [];
 
-  findAll(): User[] {
+  async findAll(): Promise<User[]> {
     return this.storage;
   }
 
-  findOne(id: string): User | undefined {
+  async findOne(id: string): Promise<User | undefined> {
     return this.storage.find(user => user.id === id);
   }
 
-  createUser(dto: CreateUserDto): User {
+  async createUser(dto: CreateUserDto): Promise<User> {
     const newUser: User = {
       ...dto,
       id: uuidv4(),
@@ -26,7 +27,7 @@ export class UserService {
     return newUser;
   }
 
-  updateUser(id: string, dto: UpdatePasswordDto): User | null {
+  async updateUser(id: string, dto: UpdatePasswordDto): Promise<User | null> {
     const userIndex = this.storage.findIndex(user => user.id === id);
     if (userIndex === -1) {
       return null;
@@ -47,7 +48,7 @@ export class UserService {
     return updatedUser;
   }
 
-  deleteUser(id: string): boolean {
+  async deleteUser(id: string): Promise<boolean> {
     const userIndex = this.storage.findIndex(user => user.id === id);
     if (userIndex === -1) {
       return false;
