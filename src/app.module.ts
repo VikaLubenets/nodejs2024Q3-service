@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import { TrackModule } from './modules/track/track.module';
 import { FavoritesModule } from './modules/favorites/favorites.module';
@@ -15,7 +13,5 @@ import { AlbumModule } from './modules/album/album.module';
     ArtistModule,
     AlbumModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
