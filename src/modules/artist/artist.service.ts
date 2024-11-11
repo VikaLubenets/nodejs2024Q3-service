@@ -2,10 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { Artist } from './type';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateArtistDto, UpdateArtistDto } from './dto';
+import { AlbumService } from '../album/album.service';
+import { TrackService } from '../track/track.service';
+import { Track } from '../track/type';
+import { Album } from '../album/type';
 
 @Injectable()
 export class ArtistService {
   private storage: Artist[] = [];
+
+  constructor(
+    private readonly albumService: AlbumService,
+    private readonly trackService: TrackService,
+  ) {}
 
   async findAll(): Promise<Artist[]> {
     return this.storage;
@@ -39,12 +48,34 @@ export class ArtistService {
     return updatedArtist;
   }
 
+  async removeAllConnectedTracks(artistId: string): Promise<void> {
+    const allTracks = await this.trackService.findAll();
+    const tracksToUpdate = allTracks.filter((track) => track.artistId === artistId);
+  
+    for (const track of tracksToUpdate) {
+      track.artistId = null;
+      await this.trackService.updateTrack(track.id, track);
+    }
+  }
+  
+  async removeAllConnectedAlbums(artistId: string): Promise<void> {
+    const allAlbums = await this.albumService.findAll();
+    const albumsToUpdate = allAlbums.filter((album) => album.artistId === artistId);
+  
+    for (const album of albumsToUpdate) {
+      album.artistId = null;
+      await this.albumService.updateAlbum(album.id, album);
+    }
+  }
+
   async deleteArtist(id: string): Promise<boolean> {
     const artistIndex = this.storage.findIndex(artist => artist.id === id);
     if (artistIndex === -1) {
       return false;
     }
     this.storage.splice(artistIndex, 1);
+    this.removeAllConnectedTracks(id);
+    this.removeAllConnectedAlbums(id);
     return true;
   }
 }
