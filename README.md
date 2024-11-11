@@ -8,13 +8,19 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/VikaLubenets/nodejs2024Q3-service.git
 ```
 
 ## Installing NPM modules
 
 ```
 npm install
+```
+
+## Creation env PORT
+
+```
+Create .env file in the root directory with PORT=4000
 ```
 
 ## Running application
