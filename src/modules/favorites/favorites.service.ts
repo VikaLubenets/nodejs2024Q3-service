@@ -19,15 +19,17 @@ export class FavoritesService {
   ) {}
 
   async findAll() {
-    const artists = await Promise.all(
+    const artists = (await Promise.all(
       this.favorites.artists.map(id => this.artistService.findOne(id))
-    );
-    const albums = await Promise.all(
+    )).filter(el => Boolean(el));
+  
+    const albums = (await Promise.all(
       this.favorites.albums.map(id => this.albumService.findOne(id))
-    );
-    const tracks = await Promise.all(
+    )).filter(el => Boolean(el));
+  
+    const tracks = (await Promise.all(
       this.favorites.tracks.map(id => this.trackService.findOne(id))
-    );
+    )).filter(el => Boolean(el));
 
     return {
       artists,
