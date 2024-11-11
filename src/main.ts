@@ -12,7 +12,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Home Library Service')
-    .setDescription('API документация')
+    .setDescription('API documentation')
     .setVersion('1.0')
     .build();
 
