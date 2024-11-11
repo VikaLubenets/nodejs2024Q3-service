@@ -4,8 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { CreateArtistDto, UpdateArtistDto } from './dto';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
-import { Track } from '../track/type';
-import { Album } from '../album/type';
 
 @Injectable()
 export class ArtistService {

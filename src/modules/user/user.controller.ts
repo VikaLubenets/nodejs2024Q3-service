@@ -10,8 +10,6 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   HttpCode,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './type';
