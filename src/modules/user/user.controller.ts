@@ -13,9 +13,8 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './type';
-import { CreateUserDto, UpdatePasswordDto } from './dto';
+import { CreateUserDto, UpdatePasswordDto, UserEntity } from './dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { UserEntity } from './dto/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -48,8 +47,15 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: 'Create user' })
-  @ApiResponse({ status: 201, description: 'User is created', type: UserEntity })
-  @ApiResponse({ status: 400, description: 'Request body does not contain required fields' })
+  @ApiResponse({
+    status: 201,
+    description: 'User is created',
+    type: UserEntity,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Request body does not contain required fields',
+  })
   async createUser(
     @Body() dto: CreateUserDto,
   ): Promise<Omit<User, 'password'>> {
@@ -60,9 +66,19 @@ export class UserController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update password' })
-  @ApiResponse({ status: 200, description: 'Password is updated', type: UserEntity })
-  @ApiResponse({ status: 400, description: 'Request body does not contain required fields' })
-  @ApiResponse({ status: 404, description: "Record with id === userId doesn't exist" })
+  @ApiResponse({
+    status: 200,
+    description: 'Password is updated',
+    type: UserEntity,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Request body does not contain required fields',
+  })
+  @ApiResponse({
+    status: 404,
+    description: "Record with id === userId doesn't exist",
+  })
   @ApiResponse({ status: 403, description: 'oldPassword is wrong' })
   async updateUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -82,9 +98,16 @@ export class UserController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user' })
-  @ApiResponse({ status: 204, description: 'User is deleted', type: UserEntity })
+  @ApiResponse({
+    status: 204,
+    description: 'User is deleted',
+    type: UserEntity,
+  })
   @ApiResponse({ status: 400, description: 'userId is invalid' })
-  @ApiResponse({ status: 404, description: "Record with id === userId doesn't exist" })
+  @ApiResponse({
+    status: 404,
+    description: "Record with id === userId doesn't exist",
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
