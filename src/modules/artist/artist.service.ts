@@ -21,7 +21,7 @@ export class ArtistService {
   }
 
   async findOne(id: string): Promise<Artist | undefined> {
-    return this.storage.find(artist => artist.id === id);
+    return this.storage.find((artist) => artist.id === id);
   }
 
   async createArtist(dto: CreateArtistDto): Promise<Artist> {
@@ -34,7 +34,7 @@ export class ArtistService {
   }
 
   async updateArtist(id: string, dto: UpdateArtistDto): Promise<Artist | null> {
-    const artistIndex = this.storage.findIndex(artist => artist.id === id);
+    const artistIndex = this.storage.findIndex((artist) => artist.id === id);
     if (artistIndex === -1) {
       return null;
     }
@@ -50,18 +50,22 @@ export class ArtistService {
 
   async removeAllConnectedTracks(artistId: string): Promise<void> {
     const allTracks = await this.trackService.findAll();
-    const tracksToUpdate = allTracks.filter((track) => track.artistId === artistId);
-  
+    const tracksToUpdate = allTracks.filter(
+      (track) => track.artistId === artistId,
+    );
+
     for (const track of tracksToUpdate) {
       track.artistId = null;
       await this.trackService.updateTrack(track.id, track);
     }
   }
-  
+
   async removeAllConnectedAlbums(artistId: string): Promise<void> {
     const allAlbums = await this.albumService.findAll();
-    const albumsToUpdate = allAlbums.filter((album) => album.artistId === artistId);
-  
+    const albumsToUpdate = allAlbums.filter(
+      (album) => album.artistId === artistId,
+    );
+
     for (const album of albumsToUpdate) {
       album.artistId = null;
       await this.albumService.updateAlbum(album.id, album);
@@ -69,7 +73,7 @@ export class ArtistService {
   }
 
   async deleteArtist(id: string): Promise<boolean> {
-    const artistIndex = this.storage.findIndex(artist => artist.id === id);
+    const artistIndex = this.storage.findIndex((artist) => artist.id === id);
     if (artistIndex === -1) {
       return false;
     }

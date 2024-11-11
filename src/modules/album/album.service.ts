@@ -8,16 +8,14 @@ import { TrackService } from '../track/track.service';
 export class AlbumService {
   private storage: Album[] = [];
 
-  constructor(
-    private readonly trackService: TrackService,
-  ) {}
+  constructor(private readonly trackService: TrackService) {}
 
   async findAll(): Promise<Album[]> {
     return this.storage;
   }
 
   async findOne(id: string): Promise<Album | undefined> {
-    return this.storage.find(album => album.id === id);
+    return this.storage.find((album) => album.id === id);
   }
 
   async createAlbum(dto: CreateAlbumDto): Promise<Album> {
@@ -30,7 +28,7 @@ export class AlbumService {
   }
 
   async updateAlbum(id: string, dto: UpdateAlbumDto): Promise<Album | null> {
-    const albumIndex = this.storage.findIndex(artist => artist.id === id);
+    const albumIndex = this.storage.findIndex((artist) => artist.id === id);
     if (albumIndex === -1) {
       return null;
     }
@@ -44,18 +42,20 @@ export class AlbumService {
     return updatedAlbum;
   }
 
-  async removeAllConnectedTracks(albumId: string): Promise<void>{
+  async removeAllConnectedTracks(albumId: string): Promise<void> {
     const allTracks = await this.trackService.findAll();
-    const tracksToUpdate = allTracks.filter((track) => track.albumId === albumId);
+    const tracksToUpdate = allTracks.filter(
+      (track) => track.albumId === albumId,
+    );
 
-    for(const track of tracksToUpdate){
+    for (const track of tracksToUpdate) {
       track.albumId = null;
       await this.trackService.updateTrack(track.id, track);
     }
   }
 
   async deleteAlbum(id: string): Promise<boolean> {
-    const albumIndex = this.storage.findIndex(album => album.id === id);
+    const albumIndex = this.storage.findIndex((album) => album.id === id);
     if (albumIndex === -1) {
       return false;
     }
@@ -64,4 +64,3 @@ export class AlbumService {
     return true;
   }
 }
-

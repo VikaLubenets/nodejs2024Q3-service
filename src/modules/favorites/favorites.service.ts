@@ -19,17 +19,23 @@ export class FavoritesService {
   ) {}
 
   async findAll() {
-    const artists = (await Promise.all(
-      this.favorites.artists.map(id => this.artistService.findOne(id))
-    )).filter(el => Boolean(el));
-  
-    const albums = (await Promise.all(
-      this.favorites.albums.map(id => this.albumService.findOne(id))
-    )).filter(el => Boolean(el));
-  
-    const tracks = (await Promise.all(
-      this.favorites.tracks.map(id => this.trackService.findOne(id))
-    )).filter(el => Boolean(el));
+    const artists = (
+      await Promise.all(
+        this.favorites.artists.map((id) => this.artistService.findOne(id)),
+      )
+    ).filter((el) => Boolean(el));
+
+    const albums = (
+      await Promise.all(
+        this.favorites.albums.map((id) => this.albumService.findOne(id)),
+      )
+    ).filter((el) => Boolean(el));
+
+    const tracks = (
+      await Promise.all(
+        this.favorites.tracks.map((id) => this.trackService.findOne(id)),
+      )
+    ).filter((el) => Boolean(el));
 
     return {
       artists,
@@ -52,7 +58,10 @@ export class FavoritesService {
 
   removeFavorite(type: 'artists' | 'albums' | 'tracks', id: string) {
     const index = this.favorites[type].indexOf(id);
-    if (index === -1) throw new NotFoundException(`${type} with id ${id} not found in favorites`);
+    if (index === -1)
+      throw new NotFoundException(
+        `${type} with id ${id} not found in favorites`,
+      );
     this.favorites[type].splice(index, 1);
   }
 }

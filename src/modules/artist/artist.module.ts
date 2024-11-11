@@ -4,11 +4,10 @@ import { ArtistService } from './artist.service';
 import { AlbumModule } from '../album/album.module';
 import { TrackModule } from '../track/track.module';
 
-
 @Module({
-    imports: [AlbumModule, TrackModule], 
-    controllers: [ArtistController],
-    providers: [ArtistService],
-    exports: [ArtistService], 
+  imports: [AlbumModule, TrackModule],
+  controllers: [ArtistController],
+  providers: [ArtistService],
+  exports: [ArtistService],
 })
 export class ArtistModule {}

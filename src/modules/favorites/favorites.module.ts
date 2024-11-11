@@ -5,10 +5,9 @@ import { ArtistModule } from '../artist/artist.module';
 import { AlbumModule } from '../album/album.module';
 import { TrackModule } from '../track/track.module';
 
-
 @Module({
-    imports: [ArtistModule, AlbumModule, TrackModule], 
-    controllers: [FavoritesController],
-    providers: [FavoritesService]
+  imports: [ArtistModule, AlbumModule, TrackModule],
+  controllers: [FavoritesController],
+  providers: [FavoritesService],
 })
 export class FavoritesModule {}

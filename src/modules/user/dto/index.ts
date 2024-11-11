@@ -1,4 +1,4 @@
-import { CreateUserDto } from "./createUser.dto";
-import { UpdatePasswordDto } from "./updatePassword.dto";
+import { CreateUserDto } from './createUser.dto';
+import { UpdatePasswordDto } from './updatePassword.dto';
 
-export { CreateUserDto, UpdatePasswordDto }
+export { CreateUserDto, UpdatePasswordDto };

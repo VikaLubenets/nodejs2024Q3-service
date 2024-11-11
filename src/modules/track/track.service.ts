@@ -12,7 +12,7 @@ export class TrackService {
   }
 
   async findOne(id: string): Promise<Track | undefined> {
-    return this.storage.find(track => track.id === id);
+    return this.storage.find((track) => track.id === id);
   }
 
   async createTrack(dto: CreateTrackDto): Promise<Track> {
@@ -25,7 +25,7 @@ export class TrackService {
   }
 
   async updateTrack(id: string, dto: UpdateTrackDto): Promise<Track | null> {
-    const trackIndex = this.storage.findIndex(track => track.id === id);
+    const trackIndex = this.storage.findIndex((track) => track.id === id);
     if (trackIndex === -1) {
       return null;
     }
@@ -40,7 +40,7 @@ export class TrackService {
   }
 
   async deleteTrack(id: string): Promise<boolean> {
-    const trackIndex = this.storage.findIndex(track => track.id === id);
+    const trackIndex = this.storage.findIndex((track) => track.id === id);
     if (trackIndex === -1) {
       return false;
     }

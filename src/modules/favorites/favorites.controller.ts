@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Delete, Param, ParseUUIDPipe, HttpCode, HttpStatus, HttpException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Param,
+  ParseUUIDPipe,
+  HttpCode,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { TrackService } from '../track/track.service';
 import { AlbumService } from '../album/album.service';
@@ -21,7 +31,11 @@ export class FavoritesController {
   @Post('track/:id')
   async addTrackToFavorites(@Param('id', ParseUUIDPipe) id: string) {
     const track = await this.trackService.findOne(id);
-    if (!track) throw new HttpException("Track doesn't exist", HttpStatus.UNPROCESSABLE_ENTITY);
+    if (!track)
+      throw new HttpException(
+        "Track doesn't exist",
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     this.favoritesService.addFavorite('tracks', id);
     return { message: 'Track added to favorites' };
   }
@@ -35,7 +49,11 @@ export class FavoritesController {
   @Post('album/:id')
   async addAlbumToFavorites(@Param('id', ParseUUIDPipe) id: string) {
     const album = await this.albumService.findOne(id);
-    if (!album) throw new HttpException("Album doesn't exist", HttpStatus.UNPROCESSABLE_ENTITY);
+    if (!album)
+      throw new HttpException(
+        "Album doesn't exist",
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     this.favoritesService.addFavorite('albums', id);
     return { message: 'Album added to favorites' };
   }
@@ -49,7 +67,11 @@ export class FavoritesController {
   @Post('artist/:id')
   async addArtistToFavorites(@Param('id', ParseUUIDPipe) id: string) {
     const artist = await this.artistService.findOne(id);
-    if (!artist) throw new HttpException("Artist doesn't exist", HttpStatus.UNPROCESSABLE_ENTITY);
+    if (!artist)
+      throw new HttpException(
+        "Artist doesn't exist",
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     this.favoritesService.addFavorite('artists', id);
     return { message: 'Artist added to favorites' };
   }

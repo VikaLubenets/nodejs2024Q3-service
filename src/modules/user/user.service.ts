@@ -12,7 +12,7 @@ export class UserService {
   }
 
   async findOne(id: string): Promise<User | undefined> {
-    return this.storage.find(user => user.id === id);
+    return this.storage.find((user) => user.id === id);
   }
 
   async createUser(dto: CreateUserDto): Promise<User> {
@@ -28,7 +28,7 @@ export class UserService {
   }
 
   async updateUser(id: string, dto: UpdatePasswordDto): Promise<User | null> {
-    const userIndex = this.storage.findIndex(user => user.id === id);
+    const userIndex = this.storage.findIndex((user) => user.id === id);
     if (userIndex === -1) {
       return null;
     }
@@ -49,7 +49,7 @@ export class UserService {
   }
 
   async deleteUser(id: string): Promise<boolean> {
-    const userIndex = this.storage.findIndex(user => user.id === id);
+    const userIndex = this.storage.findIndex((user) => user.id === id);
     if (userIndex === -1) {
       return false;
     }

@@ -1,4 +1,4 @@
-import { CreateAlbumDto } from "./createAlbum.dto";
-import { UpdateAlbumDto } from "./updateAlbum.dto";
+import { CreateAlbumDto } from './createAlbum.dto';
+import { UpdateAlbumDto } from './updateAlbum.dto';
 
-export { CreateAlbumDto, UpdateAlbumDto}
+export { CreateAlbumDto, UpdateAlbumDto };
