@@ -22,20 +22,23 @@ export class UserController {
   }
 
   @Post()
-  async createUser(@Body() dto: CreateUserDto): Promise<User> {
-    return this.userService.createUser(dto);
+  async createUser(@Body() dto: CreateUserDto): Promise<Omit<User, 'password'>> {
+    const { password, ...createdUserWithoutPassword } = await this.userService.createUser(dto);
+    return createdUserWithoutPassword
   }
 
   @Put(':id')
   async updateUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdatePasswordDto,
-  ): Promise<User> {
+  ): Promise<Omit<User, 'password'>> {
     const updatedUser = await this.userService.updateUser(id, dto);
     if (!updatedUser) {
       throw new HttpException("Record with the provided id doesn't exist", HttpStatus.NOT_FOUND);
     }
-    return updatedUser;
+
+    const {password, ...updatedUserWithoutPassword} = updatedUser;
+    return updatedUserWithoutPassword;
   }
 
   @Delete(':id')
