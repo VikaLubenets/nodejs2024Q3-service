@@ -37,7 +37,7 @@ export class UserController {
       throw new HttpException("Record with the provided id doesn't exist", HttpStatus.NOT_FOUND);
     }
 
-    const {password, ...updatedUserWithoutPassword} = updatedUser;
+    const { password, ...updatedUserWithoutPassword } = updatedUser;
     return updatedUserWithoutPassword;
   }
 

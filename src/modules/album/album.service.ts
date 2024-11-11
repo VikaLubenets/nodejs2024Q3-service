@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { Album } from './type';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
+import { TrackService } from '../track/track.service';
 
 @Injectable()
 export class AlbumService {
   private storage: Album[] = [];
+
+  constructor(
+    private readonly trackService: TrackService,
+  ) {}
 
   async findAll(): Promise<Album[]> {
     return this.storage;
@@ -39,12 +44,23 @@ export class AlbumService {
     return updatedAlbum;
   }
 
+  async removeAllConnectedTracks(albumId: string): Promise<void>{
+    const allTracks = await this.trackService.findAll();
+    const tracksToUpdate = allTracks.filter((track) => track.albumId === albumId);
+
+    for(const track of tracksToUpdate){
+      track.albumId = null;
+      await this.trackService.updateTrack(track.id, track);
+    }
+  }
+
   async deleteAlbum(id: string): Promise<boolean> {
     const albumIndex = this.storage.findIndex(album => album.id === id);
     if (albumIndex === -1) {
       return false;
     }
     this.storage.splice(albumIndex, 1);
+    this.removeAllConnectedTracks(id);
     return true;
   }
 }
