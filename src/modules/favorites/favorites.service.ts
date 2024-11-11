@@ -2,14 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ArtistService } from '../artist/artist.service';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
+import { Favorites } from './type';
 
 @Injectable()
 export class FavoritesService {
-  private favorites: {
-    artists: string[];
-    albums: string[];
-    tracks: string[];
-  } = {
+  private favorites: Favorites = {
     artists: [],
     albums: [],
     tracks: [],
@@ -55,9 +52,5 @@ export class FavoritesService {
     const index = this.favorites[type].indexOf(id);
     if (index === -1) throw new NotFoundException(`${type} with id ${id} not found in favorites`);
     this.favorites[type].splice(index, 1);
-  }
-
-  isFavorite(type: 'artists' | 'albums' | 'tracks', id: string): boolean {
-    return this.favorites[type].includes(id);
   }
 }
