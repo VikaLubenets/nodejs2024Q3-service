@@ -2,6 +2,8 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
 import { DatabaseService } from '../database/database.service';
 import { User } from '@prisma/client';
+import { transformUser } from 'src/utils/transfromUser';
+import { User as UserI} from './type';
 
 @Injectable()
 export class UserService {
@@ -16,11 +18,12 @@ export class UserService {
     return this.db.user.findUnique({ where: { id } });
   }
 
-  async createUser(dto: CreateUserDto): Promise<User> {
-    return this.db.user.create({ data: {...dto} });
+  async createUser(dto: CreateUserDto): Promise<UserI> {
+    const user = await this.db.user.create({ data: {...dto} })
+    return transformUser(user);
   }
 
-  async updateUser(id: string, dto: UpdatePasswordDto): Promise<User | null> {
+  async updateUser(id: string, dto: UpdatePasswordDto): Promise<UserI | null> {
     const user = await this.db.user.findUnique({ where: { id } });
 
     if (!user) {
@@ -37,10 +40,12 @@ export class UserService {
       version: user.version + 1,
     };
 
-    return this.db.user.update({
+   const userUPD = await this.db.user.update({
       where: { id },
       data: updatedUser,
     });
+
+    return transformUser(userUPD);
   }
 
   async deleteUser(id: string): Promise<boolean> {

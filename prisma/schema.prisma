@@ -26,9 +26,9 @@ model Track {
   id String @id @default(uuid())
   name String
   artistId String?
-  artist   Artist?  @relation(fields: [artistId], references: [id])
+  artist   Artist?  @relation(fields: [artistId], references: [id], onDelete: SetNull)
   albumId  String?
-  album    Album?   @relation(fields: [albumId], references: [id])
+  album    Album?   @relation(fields: [albumId], references: [id], onDelete: SetNull)
   duration Int
 }
 
@@ -45,13 +45,13 @@ model Album {
   name String
   year Int
   artistId String?
-  artist   Artist?  @relation(fields: [artistId], references: [id])
+  artist   Artist?  @relation(fields: [artistId], references: [id], onDelete: SetNull)
   tracks   Track[]
 }
 
 model Favorites {
   id Int @id @default(1)
-  artists  String[]
-  albums   String[]
-  tracks   String[]
+  artists  String[] @default([])
+  albums  String[] @default([])
+  tracks  String[] @default([])
 }

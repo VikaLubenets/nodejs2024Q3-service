@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   HttpException,
+  NotFoundException,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { TrackService } from '../track/track.service';
@@ -24,8 +25,9 @@ export class FavoritesController {
   ) {}
 
   @Get()
-  getAllFavorites() {
-    return this.favoritesService.findAll();
+  async getAllFavorites() {
+    const allFavs = await this.favoritesService.findAll();
+    return allFavs
   }
 
   @Post('track/:id')
@@ -36,14 +38,21 @@ export class FavoritesController {
         "Track doesn't exist",
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
-    this.favoritesService.addFavorite('tracks', id);
+    await this.favoritesService.addFavorite('tracks', id);
     return { message: 'Track added to favorites' };
   }
 
   @Delete('track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeTrackFromFavorites(@Param('id', ParseUUIDPipe) id: string) {
-    this.favoritesService.removeFavorite('tracks', id);
+    try {
+      await this.favoritesService.removeFavorite('tracks', id);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Post('album/:id')
@@ -54,14 +63,21 @@ export class FavoritesController {
         "Album doesn't exist",
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
-    this.favoritesService.addFavorite('albums', id);
+    await this.favoritesService.addFavorite('albums', id);
     return { message: 'Album added to favorites' };
   }
 
   @Delete('album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeAlbumFromFavorites(@Param('id', ParseUUIDPipe) id: string) {
-    this.favoritesService.removeFavorite('albums', id);
+    try{
+      await this.favoritesService.removeFavorite('albums', id);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Post('artist/:id')
@@ -72,13 +88,20 @@ export class FavoritesController {
         "Artist doesn't exist",
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
-    this.favoritesService.addFavorite('artists', id);
+    await this.favoritesService.addFavorite('artists', id);
     return { message: 'Artist added to favorites' };
   }
 
   @Delete('artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeArtistFromFavorites(@Param('id', ParseUUIDPipe) id: string) {
-    this.favoritesService.removeFavorite('artists', id);
+    try {
+      await this.favoritesService.removeFavorite('artists', id);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      }
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

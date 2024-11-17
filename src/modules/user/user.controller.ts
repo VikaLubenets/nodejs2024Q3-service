@@ -14,6 +14,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
 import { User } from '@prisma/client';
+import { User as UserI } from './type'
 
 @Controller('user')
 export class UserController {
@@ -41,7 +42,7 @@ export class UserController {
   @Post()
   async createUser(
     @Body() dto: CreateUserDto,
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<Omit<UserI, 'password'>> {
     const { password, ...createdUserWithoutPassword } =
       await this.userService.createUser(dto);
     return createdUserWithoutPassword;
@@ -51,7 +52,7 @@ export class UserController {
   async updateUser(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdatePasswordDto,
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<Omit<UserI, 'password'>> {
     const updatedUser = await this.userService.updateUser(id, dto);
     if (!updatedUser) {
       throw new HttpException(

@@ -43,9 +43,9 @@ CREATE TABLE "Album" (
 -- CreateTable
 CREATE TABLE "Favorites" (
     "id" INTEGER NOT NULL DEFAULT 1,
-    "artists" TEXT[],
-    "albums" TEXT[],
-    "tracks" TEXT[],
+    "artists" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "albums" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "tracks" TEXT[] DEFAULT ARRAY[]::TEXT[],
 
     CONSTRAINT "Favorites_pkey" PRIMARY KEY ("id")
 );

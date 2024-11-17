@@ -14,12 +14,4 @@ export class DatabaseService extends PrismaClient {
             }
         })
     }
-
-    async resetDB() {
-        await this.user.deleteMany();
-        await this.track.deleteMany();
-        await this.album.deleteMany();
-        await this.artist.deleteMany();
-        await this.favorites.deleteMany();
-      }
 }
