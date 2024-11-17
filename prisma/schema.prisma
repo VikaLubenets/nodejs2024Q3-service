@@ -18,8 +18,8 @@ model User {
   login String 
   password String
   version Int 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt Int 
+  updatedAt Int
 }
 
 model Track {
