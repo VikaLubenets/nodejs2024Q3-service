@@ -2,10 +2,12 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { User } from './type';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class UserService {
   private storage: User[] = [];
+  constructor(private readonly db: DatabaseService){}
 
   async findAll(): Promise<User[]> {
     return this.storage;
