@@ -34,8 +34,7 @@ export class UserService {
       throw new HttpException('Incorrect old password', HttpStatus.FORBIDDEN);
     }
 
-    const updatedUser: User = {
-      ...user,
+    const updatedUser = {
       password: dto.newPassword,
       version: user.version + 1,
     };
