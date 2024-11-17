@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { User } from './type';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
 import { DatabaseService } from '../database/database.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -17,13 +17,7 @@ export class UserService {
   }
 
   async createUser(dto: CreateUserDto): Promise<User> {
-    const newUser = {
-      ...dto,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      version: 1,
-    };
-    return this.db.user.create({ data: newUser });
+    return this.db.user.create({ data: {...dto} });
   }
 
   async updateUser(id: string, dto: UpdatePasswordDto): Promise<User | null> {
@@ -40,7 +34,6 @@ export class UserService {
     const updatedUser: User = {
       ...user,
       password: dto.newPassword,
-      updatedAt: Date.now(),
       version: user.version + 1,
     };
 

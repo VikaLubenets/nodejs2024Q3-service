@@ -12,8 +12,8 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from './type';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
+import { User } from '@prisma/client';
 
 @Controller('user')
 export class UserController {
