@@ -17,7 +17,7 @@ model User {
   id String @id @default(uuid())
   login String 
   password String
-  version Int 
+  version Int @default(1)
   createdAt Int 
   updatedAt Int
 }
@@ -50,7 +50,7 @@ model Album {
 }
 
 model Favorites {
-  id String @id @default(uuid())
+  id Int @id @default(1)
   artists  String[]
   albums   String[]
   tracks   String[]

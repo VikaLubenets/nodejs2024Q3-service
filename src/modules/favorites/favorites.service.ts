@@ -3,6 +3,7 @@ import { ArtistService } from '../artist/artist.service';
 import { AlbumService } from '../album/album.service';
 import { TrackService } from '../track/track.service';
 import { Favorites } from './type';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class FavoritesService {
@@ -13,6 +14,7 @@ export class FavoritesService {
   };
 
   constructor(
+    private readonly db: DatabaseService,
     private readonly artistService: ArtistService,
     private readonly albumService: AlbumService,
     private readonly trackService: TrackService,

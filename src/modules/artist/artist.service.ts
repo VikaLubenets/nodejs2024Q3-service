@@ -1,56 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { Artist } from './type';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateArtistDto, UpdateArtistDto } from './dto';
-import { AlbumService } from '../album/album.service';
+import { DatabaseService } from '../database/database.service';
 import { TrackService } from '../track/track.service';
+import { AlbumService } from '../album/album.service';
 
 @Injectable()
 export class ArtistService {
-  private storage: Artist[] = [];
-
   constructor(
-    private readonly albumService: AlbumService,
+    private readonly db: DatabaseService,
     private readonly trackService: TrackService,
+    private readonly albumService: AlbumService,
   ) {}
 
   async findAll(): Promise<Artist[]> {
-    return this.storage;
+    return this.db.artist.findMany();
   }
 
-  async findOne(id: string): Promise<Artist | undefined> {
-    return this.storage.find((artist) => artist.id === id);
+  async findOne(id: string): Promise<Artist | null> {
+    return this.db.artist.findUnique({ where: { id } });
   }
 
   async createArtist(dto: CreateArtistDto): Promise<Artist> {
-    const newArtist: Artist = {
-      ...dto,
-      id: uuidv4(),
-    };
-    this.storage.push(newArtist);
-    return newArtist;
+    return this.db.artist.create({ data: dto });
   }
 
   async updateArtist(id: string, dto: UpdateArtistDto): Promise<Artist | null> {
-    const artistIndex = this.storage.findIndex((artist) => artist.id === id);
-    if (artistIndex === -1) {
+    const artist = await this.db.artist.findUnique({ where: { id } });
+
+    if (!artist) {
       return null;
     }
-    const artist = this.storage[artistIndex];
 
-    const updatedArtist: Artist = {
-      ...artist,
-      ...dto,
-    };
-    this.storage[artistIndex] = updatedArtist;
-    return updatedArtist;
+    return this.db.artist.update({
+      where: { id },
+      data: dto,
+    });
   }
 
   async removeAllConnectedTracks(artistId: string): Promise<void> {
-    const allTracks = await this.trackService.findAll();
-    const tracksToUpdate = allTracks.filter(
-      (track) => track.artistId === artistId,
-    );
+    const tracks = await this.trackService.findAll();
+    const tracksToUpdate = tracks.filter((track) => track.artistId === artistId);
 
     for (const track of tracksToUpdate) {
       track.artistId = null;
@@ -59,10 +49,8 @@ export class ArtistService {
   }
 
   async removeAllConnectedAlbums(artistId: string): Promise<void> {
-    const allAlbums = await this.albumService.findAll();
-    const albumsToUpdate = allAlbums.filter(
-      (album) => album.artistId === artistId,
-    );
+    const albums = await this.albumService.findAll();
+    const albumsToUpdate = albums.filter((album) => album.artistId === artistId);
 
     for (const album of albumsToUpdate) {
       album.artistId = null;
@@ -71,13 +59,15 @@ export class ArtistService {
   }
 
   async deleteArtist(id: string): Promise<boolean> {
-    const artistIndex = this.storage.findIndex((artist) => artist.id === id);
-    if (artistIndex === -1) {
+    const artist = await this.db.artist.findUnique({ where: { id } });
+    if (!artist) {
       return false;
     }
-    this.storage.splice(artistIndex, 1);
-    this.removeAllConnectedTracks(id);
-    this.removeAllConnectedAlbums(id);
+
+    await this.removeAllConnectedTracks(id);
+    await this.removeAllConnectedAlbums(id);
+
+    await this.db.artist.delete({ where: { id } });
     return true;
   }
 }
