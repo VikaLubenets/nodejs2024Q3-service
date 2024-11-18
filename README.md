@@ -4,6 +4,7 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker - [Download & Install Docker](https://www.docker.com/).
 
 ## Running the aplication 
 1. Clone the repository:
@@ -21,10 +22,6 @@
     ```bash
     docker-compose up --build
     ```
-
-3. The application will be running at:
-    - API: `http://localhost:4000`
-    - PostgreSQL Database: `localhost:5432`
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
