@@ -27,7 +27,7 @@ export class FavoritesController {
   @Get()
   async getAllFavorites() {
     const allFavs = await this.favoritesService.findAll();
-    return allFavs
+    return allFavs;
   }
 
   @Post('track/:id')
@@ -51,7 +51,10 @@ export class FavoritesController {
       if (error instanceof NotFoundException) {
         throw new HttpException(error.message, HttpStatus.NOT_FOUND);
       }
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -70,13 +73,16 @@ export class FavoritesController {
   @Delete('album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async removeAlbumFromFavorites(@Param('id', ParseUUIDPipe) id: string) {
-    try{
+    try {
       await this.favoritesService.removeFavorite('albums', id);
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw new HttpException(error.message, HttpStatus.NOT_FOUND);
       }
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -101,7 +107,10 @@ export class FavoritesController {
       if (error instanceof NotFoundException) {
         throw new HttpException(error.message, HttpStatus.NOT_FOUND);
       }
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

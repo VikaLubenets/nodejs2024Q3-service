@@ -1,14 +1,21 @@
 version: '3.8'
 services:
+
   dev-db:
     image: postgres:13
     restart: always
-    ports:
-      - '5434:5432'
     environment:
+      POSTGRES_DB: nest
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
-      POSTGRES_DB: nest
+    ports:
+      - "5432:5432" 
 
-volumes:
-  postgres_data:
+  app:
+    build: .
+    ports:
+      - '4000:4000'
+    depends_on:
+      - dev-db
+    env_file:
+      - .env

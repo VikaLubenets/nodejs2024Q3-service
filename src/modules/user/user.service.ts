@@ -1,14 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
 import { DatabaseService } from '../database/database.service';
-import { User } from '@prisma/client';
 import { transformUser } from 'src/utils/transfromUser';
-import { User as UserI} from './type';
+import { PrismaUser as User, User as UserI } from './type';
 
 @Injectable()
 export class UserService {
   private storage: User[] = [];
-  constructor(private readonly db: DatabaseService){}
+  constructor(private readonly db: DatabaseService) {}
 
   async findAll(): Promise<User[]> {
     return this.db.user.findMany();
@@ -19,7 +18,7 @@ export class UserService {
   }
 
   async createUser(dto: CreateUserDto): Promise<UserI> {
-    const user = await this.db.user.create({ data: {...dto} })
+    const user = await this.db.user.create({ data: { ...dto } });
     return transformUser(user);
   }
 
@@ -39,7 +38,7 @@ export class UserService {
       version: user.version + 1,
     };
 
-   const userUPD = await this.db.user.update({
+    const userUPD = await this.db.user.update({
       where: { id },
       data: updatedUser,
     });

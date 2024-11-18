@@ -5,13 +5,13 @@ dotenv.config();
 
 @Injectable()
 export class DatabaseService extends PrismaClient {
-    constructor(){
-        super({
-            datasources: {
-                db: {
-                    url: process.env.DATABASE_URL ?? ''
-                }
-            }
-        })
-    }
+  constructor() {
+    super({
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL ?? '',
+        },
+      },
+    });
+  }
 }

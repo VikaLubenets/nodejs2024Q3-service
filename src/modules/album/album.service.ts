@@ -6,7 +6,10 @@ import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class AlbumService {
-  constructor(private readonly db: DatabaseService, private readonly trackService: TrackService) {}
+  constructor(
+    private readonly db: DatabaseService,
+    private readonly trackService: TrackService,
+  ) {}
 
   async findAll(): Promise<Album[]> {
     return this.db.album.findMany();

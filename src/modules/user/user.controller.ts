@@ -13,8 +13,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
-import { User } from '@prisma/client';
-import { User as UserI } from './type'
+import { PrismaUser as User, User as UserI } from './type';
 
 @Controller('user')
 export class UserController {

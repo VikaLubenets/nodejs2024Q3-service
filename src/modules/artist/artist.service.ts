@@ -40,7 +40,9 @@ export class ArtistService {
 
   async removeAllConnectedTracks(artistId: string): Promise<void> {
     const tracks = await this.trackService.findAll();
-    const tracksToUpdate = tracks.filter((track) => track.artistId === artistId);
+    const tracksToUpdate = tracks.filter(
+      (track) => track.artistId === artistId,
+    );
 
     for (const track of tracksToUpdate) {
       track.artistId = null;
@@ -50,7 +52,9 @@ export class ArtistService {
 
   async removeAllConnectedAlbums(artistId: string): Promise<void> {
     const albums = await this.albumService.findAll();
-    const albumsToUpdate = albums.filter((album) => album.artistId === artistId);
+    const albumsToUpdate = albums.filter(
+      (album) => album.artistId === artistId,
+    );
 
     for (const album of albumsToUpdate) {
       album.artistId = null;

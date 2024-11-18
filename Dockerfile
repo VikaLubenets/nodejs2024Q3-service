@@ -1,0 +1,17 @@
+FROM node:22.9.0
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm cache clean --force
+
+RUN npm install
+
+COPY . .
+
+RUN npx prisma generate
+
+EXPOSE 4000
+
+CMD [  "npm", "run", "start:migrate:prod" ]

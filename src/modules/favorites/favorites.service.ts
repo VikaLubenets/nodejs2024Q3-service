@@ -1,14 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ArtistService } from '../artist/artist.service';
-import { AlbumService } from '../album/album.service';
-import { TrackService } from '../track/track.service';
 import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class FavoritesService {
-  constructor(
-    private readonly db: DatabaseService,
-  ) {}
+  constructor(private readonly db: DatabaseService) {}
 
   async findAll() {
     const favorites = await this.db.favorites.findUnique({
@@ -19,9 +14,15 @@ export class FavoritesService {
       return { artists: [], albums: [], tracks: [] };
     }
 
-    const artists = await this.db.artist.findMany({ where: { id: { in: favorites.artists } } });
-    const albums = await this.db.album.findMany({ where: { id: { in: favorites.albums } } });
-    const tracks = await this.db.track.findMany({ where: { id: { in: favorites.tracks } } });
+    const artists = await this.db.artist.findMany({
+      where: { id: { in: favorites.artists } },
+    });
+    const albums = await this.db.album.findMany({
+      where: { id: { in: favorites.albums } },
+    });
+    const tracks = await this.db.track.findMany({
+      where: { id: { in: favorites.tracks } },
+    });
     return { artists, albums, tracks };
   }
 
