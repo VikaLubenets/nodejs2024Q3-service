@@ -4,24 +4,24 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker - [Download & Install Docker](https://www.docker.com/).
 
-## Downloading
+## Running the aplication 
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/VikaLubenets/nodejs2024Q3-service.git
+    cd nodejs2024Q3-service
+    ```
 
-```
-git clone {repository URL}
-```
+2. Install the dependencies:
+    ```bash
+    npm install
+    ```
 
-## Installing NPM modules
-
-```
-npm install
-```
-
-## Running application
-
-```
-npm start
-```
+3. Build and start the containers:
+    ```bash
+    docker-compose up --build
+    ```
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.

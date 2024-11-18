@@ -1,59 +1,59 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { User } from './type';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
+import { DatabaseService } from '../database/database.service';
+import { transformUser } from 'src/utils/transfromUser';
+import { PrismaUser as User, User as UserI } from './type';
 
 @Injectable()
 export class UserService {
   private storage: User[] = [];
+  constructor(private readonly db: DatabaseService) {}
 
   async findAll(): Promise<User[]> {
-    return this.storage;
+    return this.db.user.findMany();
   }
 
   async findOne(id: string): Promise<User | undefined> {
-    return this.storage.find((user) => user.id === id);
+    return this.db.user.findUnique({ where: { id } });
   }
 
-  async createUser(dto: CreateUserDto): Promise<User> {
-    const newUser: User = {
-      ...dto,
-      id: uuidv4(),
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      version: 1,
-    };
-    this.storage.push(newUser);
-    return newUser;
+  async createUser(dto: CreateUserDto): Promise<UserI> {
+    const user = await this.db.user.create({ data: { ...dto } });
+    return transformUser(user);
   }
 
-  async updateUser(id: string, dto: UpdatePasswordDto): Promise<User | null> {
-    const userIndex = this.storage.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
+  async updateUser(id: string, dto: UpdatePasswordDto): Promise<UserI | null> {
+    const user = await this.db.user.findUnique({ where: { id } });
+
+    if (!user) {
       return null;
     }
-    const user = this.storage[userIndex];
 
     if (user.password !== dto.oldPassword) {
       throw new HttpException('Incorrect old password', HttpStatus.FORBIDDEN);
     }
 
-    const updatedUser: User = {
-      ...user,
+    const updatedUser = {
       password: dto.newPassword,
-      updatedAt: Date.now(),
       version: user.version + 1,
     };
-    this.storage[userIndex] = updatedUser;
-    return updatedUser;
+
+    const userUPD = await this.db.user.update({
+      where: { id },
+      data: updatedUser,
+    });
+
+    return transformUser(userUPD);
   }
 
   async deleteUser(id: string): Promise<boolean> {
-    const userIndex = this.storage.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
+    const user = await this.db.user.findUnique({ where: { id } });
+
+    if (!user) {
       return false;
     }
-    this.storage.splice(userIndex, 1);
+
+    await this.db.user.delete({ where: { id } });
     return true;
   }
 }

@@ -1,67 +1,80 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ArtistService } from '../artist/artist.service';
-import { AlbumService } from '../album/album.service';
-import { TrackService } from '../track/track.service';
-import { Favorites } from './type';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class FavoritesService {
-  private favorites: Favorites = {
-    artists: [],
-    albums: [],
-    tracks: [],
-  };
-
-  constructor(
-    private readonly artistService: ArtistService,
-    private readonly albumService: AlbumService,
-    private readonly trackService: TrackService,
-  ) {}
+  constructor(private readonly db: DatabaseService) {}
 
   async findAll() {
-    const artists = (
-      await Promise.all(
-        this.favorites.artists.map((id) => this.artistService.findOne(id)),
-      )
-    ).filter((el) => Boolean(el));
+    const favorites = await this.db.favorites.findUnique({
+      where: { id: 1 },
+    });
 
-    const albums = (
-      await Promise.all(
-        this.favorites.albums.map((id) => this.albumService.findOne(id)),
-      )
-    ).filter((el) => Boolean(el));
+    if (!favorites) {
+      return { artists: [], albums: [], tracks: [] };
+    }
 
-    const tracks = (
-      await Promise.all(
-        this.favorites.tracks.map((id) => this.trackService.findOne(id)),
-      )
-    ).filter((el) => Boolean(el));
-
-    return {
-      artists,
-      albums,
-      tracks,
-    };
+    const artists = await this.db.artist.findMany({
+      where: { id: { in: favorites.artists } },
+    });
+    const albums = await this.db.album.findMany({
+      where: { id: { in: favorites.albums } },
+    });
+    const tracks = await this.db.track.findMany({
+      where: { id: { in: favorites.tracks } },
+    });
+    return { artists, albums, tracks };
   }
 
-  addFavorite(type: 'artists' | 'albums' | 'tracks', id: string) {
-    if (type === 'artists' && !this.favorites.artists.includes(id)) {
-      this.favorites.artists.push(id);
-    } else if (type === 'albums' && !this.favorites.albums.includes(id)) {
-      this.favorites.albums.push(id);
-    } else if (type === 'tracks' && !this.favorites.tracks.includes(id)) {
-      this.favorites.tracks.push(id);
+  async addFavorite(type: 'artists' | 'albums' | 'tracks', id: string) {
+    const favorites = await this.db.favorites.findUnique({ where: { id: 1 } });
+
+    if (!favorites) {
+      await this.db.favorites.create({
+        data: {
+          id: 1,
+          artists: type === 'artists' ? [id] : [],
+          albums: type === 'albums' ? [id] : [],
+          tracks: type === 'tracks' ? [id] : [],
+        },
+      });
+      return;
+    }
+
+    if (type === 'artists' && !favorites.artists.includes(id)) {
+      await this.db.favorites.update({
+        where: { id: 1 },
+        data: { artists: [...favorites.artists, id] },
+      });
+    } else if (type === 'albums' && !favorites.albums.includes(id)) {
+      await this.db.favorites.update({
+        where: { id: 1 },
+        data: { albums: [...favorites.albums, id] },
+      });
+    } else if (type === 'tracks' && !favorites.tracks.includes(id)) {
+      await this.db.favorites.update({
+        where: { id: 1 },
+        data: { tracks: [...favorites.tracks, id] },
+      });
     } else {
-      throw new Error(`Invalid item type - ${type}`);
+      throw new Error(`Invalid item type or item already exists - ${type}`);
     }
   }
 
-  removeFavorite(type: 'artists' | 'albums' | 'tracks', id: string) {
-    const index = this.favorites[type].indexOf(id);
-    if (index === -1)
+  async removeFavorite(type: 'artists' | 'albums' | 'tracks', id: string) {
+    const favorites = await this.db.favorites.findUnique({ where: { id: 1 } });
+
+    if (!favorites || !favorites[type].includes(id)) {
       throw new NotFoundException(
-        `${type} with id ${id} not found in favorites`,
+        `${type} with id ${id} not found in : ${favorites[type]}`,
       );
-    this.favorites[type].splice(index, 1);
+    }
+
+    await this.db.favorites.update({
+      where: { id: 1 },
+      data: {
+        [type]: favorites[type].filter((itemId) => itemId !== id),
+      },
+    });
   }
 }

@@ -1,8 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as dotenv from 'dotenv';
+import { readFile } from 'fs/promises';
+import { resolve } from 'path';
+import { cwd } from 'node:process';
+import { parse } from 'yaml';
 
 dotenv.config();
 
@@ -10,14 +14,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
 
-  const config = new DocumentBuilder()
-    .setTitle('Home Library Service')
-    .setDescription('API documentation')
-    .setVersion('1.0')
-    .build();
-
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  const document = await readFile(resolve(cwd(), 'doc', 'api.yaml'), {
+    encoding: 'utf-8',
+  });
+  SwaggerModule.setup('doc', app, parse(document));
 
   const port = process.env.PORT ?? 4000;
   await app.listen(port);
