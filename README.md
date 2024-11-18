@@ -12,7 +12,12 @@
     cd nodejs2024Q3-service
     ```
 
-2. Build and start the containers:
+2. Install the dependencies:
+    ```bash
+    npm install
+    ```
+
+3. Build and start the containers:
     ```bash
     docker-compose up --build
     ```

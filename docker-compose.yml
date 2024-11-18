@@ -33,7 +33,6 @@ services:
     env_file:
       - .env
     environment:
-      NODE_ENV: development
       DATABASE_URL: ${DATABASE_URL}
     volumes:
       - ./src:/app/src
