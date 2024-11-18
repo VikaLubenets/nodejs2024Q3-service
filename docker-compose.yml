@@ -1,33 +1,49 @@
 version: '3.8'
 services:
 
-  dev-db:
-    image: postgres:13
+  db:
+    container_name: postgres
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
     restart: always
+    env_file: .env
     environment:
-      POSTGRES_DB: nest
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_NAME}
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_logs:/var/lib/postgresql
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
     networks:
-      - app-network
+      - my-app-network
 
   app:
-    build: .
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
     ports:
-      - '4000:4000'
+      - ${PORT}:${PORT}
     depends_on:
-      - dev-db
+      - db
     env_file:
       - .env
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: ${DATABASE_URL}
     volumes:
       - ./src:/app/src
     networks:
-      - app-network
+      - my-app-network
 
 networks:
-  app-network:
+  my-app-network:
     driver: bridge
+
+volumes:
+  postgres_data:
+  postgres_logs:
