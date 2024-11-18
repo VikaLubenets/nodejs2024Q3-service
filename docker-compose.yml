@@ -21,6 +21,7 @@ services:
       - my-app-network
 
   app:
+    image: vikalubenets/nodejs2024q3-service-app
     container_name: app
     build:
       context: .
