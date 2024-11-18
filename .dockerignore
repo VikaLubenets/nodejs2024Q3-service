@@ -1,6 +1,7 @@
-# Node module directories
+# compiled output
 node_modules
 dist
+/pgdata/
 
 # Logs
 npm-debug.log
