@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 export class SignupService  {
   constructor(private readonly db: DatabaseService) {}
 
-  async signup(dto: SignupDto){
+  async signup(dto: SignupDto) {
     const { password, login } = dto;
 
     const hashPassword = await bcrypt.hash(password, 10);
