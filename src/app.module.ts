@@ -5,6 +5,8 @@ import { FavoritesModule } from './modules/favorites/favorites.module';
 import { ArtistModule } from './modules/artist/artist.module';
 import { AlbumModule } from './modules/album/album.module';
 import { DatabaseModule } from './modules/database/database.module';
+import { AuthGuard } from './modules/auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -14,6 +16,12 @@ import { DatabaseModule } from './modules/database/database.module';
     ArtistModule,
     AlbumModule,
     DatabaseModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}
