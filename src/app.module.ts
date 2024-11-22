@@ -7,6 +7,7 @@ import { AlbumModule } from './modules/album/album.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { AuthGuard } from './modules/auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { APP_GUARD } from '@nestjs/core';
     ArtistModule,
     AlbumModule,
     DatabaseModule,
+    AuthModule,
   ],
   providers: [
     {
