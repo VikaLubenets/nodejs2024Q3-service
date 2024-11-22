@@ -1,20 +1,26 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SignupDto } from './dto/signup.dto';
-import { LoginDto } from './dto/login.dto';
 import { DatabaseService } from '../database/database.service';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
-export class AuthService  {
+export class SignupService  {
   constructor(private readonly db: DatabaseService) {}
 
   async signup(dto: SignupDto){
+    const { password, login } = dto;
+
+    const hashPassword = await bcrypt.hash(password, 10);
+
     try {
-        const user = await this.db.user.create({
-            data: dto
-        })
-        return user;
+      await this.db.user.create({
+        data: {
+          login,
+          password: hashPassword,
+        },
+      });
     } catch(err){
         if(err instanceof PrismaClientKnownRequestError){
             if(err.code === 'P2002'){
@@ -25,21 +31,6 @@ export class AuthService  {
         }
     }
     
-  }
-
-  async login({login, password}: LoginDto){
-    const user = await this.db.user.findUnique({
-        where: { login, password },
-      });
-  
-      if (!user) {
-        throw new HttpException(
-          'Incorrect login or password',
-          HttpStatus.FORBIDDEN
-        );
-      }
-
-      return 'token'
   }
   
 }
