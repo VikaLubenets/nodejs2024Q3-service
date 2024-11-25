@@ -21,5 +21,15 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 4000;
   await app.listen(port);
+
+  process.on('uncaughtException', (error) => {
+    console.error(`Uncaught Exception: ${error.message}`, error.stack);
+  });
+
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error(
+      `Unhandled Rejection at: ${promise} reason: ${reason}`,
+    );
+  });
 }
 bootstrap();
