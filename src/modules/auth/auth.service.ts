@@ -5,12 +5,13 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SignupDto } from './dto/signup.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly db: DatabaseService,
     private readonly jwtService: JwtService,
+    private readonly userService: UserService,
   ) {}
 
   async signup(dto: SignupDto) {
@@ -19,12 +20,7 @@ export class AuthService {
     const hashPassword = await bcrypt.hash(password, 10);
 
     try {
-      await this.db.user.create({
-        data: {
-          login,
-          password: hashPassword,
-        },
-      });
+      return this.userService.createUser({ login, password: hashPassword });
     } catch (err) {
       if (err instanceof PrismaClientKnownRequestError) {
         if (err.code === 'P2002') {
@@ -40,9 +36,7 @@ export class AuthService {
   }
 
   async login({ login, password }: LoginDto): Promise<{ token: string }> {
-    const user = await this.db.user.findUnique({
-      where: { login },
-    });
+    const user = await this.userService.findByLogin(login);
 
     if (!user) {
       throw new HttpException(
@@ -61,9 +55,9 @@ export class AuthService {
     }
 
     const payload = { userId: user.id, login: user.login };
+    const token = await this.jwtService.signAsync(payload);
 
-    return {
-      token: await this.jwtService.signAsync(payload),
-    };
+    return { token };
   }
+
 }
