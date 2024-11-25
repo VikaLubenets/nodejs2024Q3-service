@@ -19,7 +19,7 @@ import { LoggingModule } from './modules/logging/logging.module';
     AlbumModule,
     DatabaseModule,
     AuthModule,
-    LoggingModule
+    LoggingModule,
   ],
   providers: [
     {
