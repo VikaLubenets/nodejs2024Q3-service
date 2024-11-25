@@ -22,6 +22,20 @@ async function bootstrap() {
   });
   SwaggerModule.setup('doc', app, parse(document));
 
+  const logger = app.get(LoggingService);
+  app.use((req, res, next) => {
+    const { method, url, query, body } = req;
+    logger.log(`REQUEST: ${method} ${url} with query: ${JSON.stringify(query)} and body: ${JSON.stringify(body)}`);
+
+    const originalSendMethod = res.send;
+    res.send = function (body: any) {
+      logger.log(`RESPONSE: ${method} ${url}  with status code: ${res.statusCode}`);
+      return originalSendMethod.call(this, body);
+    };
+
+    next();
+  });
+
   const port = process.env.PORT ?? 4000;
   await app.listen(port);
 }
