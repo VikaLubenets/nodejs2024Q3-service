@@ -13,10 +13,10 @@ dotenv.config();
       secret: process.env.JWT_SECRET_KEY,
       signOptions: { expiresIn: process.env.TOKEN_EXPIRE_TIME },
     }),
-    UserModule
+    UserModule,
   ],
   providers: [AuthService],
   controllers: [AuthController],
-  exports: [JwtModule], 
+  exports: [JwtModule],
 })
 export class AuthModule {}
