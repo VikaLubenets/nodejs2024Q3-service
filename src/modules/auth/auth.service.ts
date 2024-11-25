@@ -19,7 +19,10 @@ export class AuthService {
   async signup(dto: SignupDto) {
     const { password, login } = dto;
 
-    const hashPassword = await bcrypt.hash(password, process.env.CRYPT_SALT);
+    const hashPassword = await bcrypt.hash(
+      password,
+      parseInt(process.env.CRYPT_SALT, 10),
+    );
 
     try {
       const user = await this.userService.createUser({

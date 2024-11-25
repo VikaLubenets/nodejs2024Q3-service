@@ -1,5 +1,11 @@
 import { Injectable, ConsoleLogger } from '@nestjs/common';
-import { appendFileSync, existsSync, mkdirSync, renameSync, statSync } from 'fs';
+import {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  renameSync,
+  statSync,
+} from 'fs';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -10,7 +16,6 @@ const ERROR_FILE_NAME = 'error.log';
 
 @Injectable()
 export class LoggingService extends ConsoleLogger {
-  private logFilePath: string;
   private maxSize: number;
   private logLevelNum: number;
   private commonFilePath: string;
@@ -25,10 +30,10 @@ export class LoggingService extends ConsoleLogger {
   };
 
   constructor() {
-    super()
-    const logDir = join(__dirname, '../../logs/app.log');
+    super();
+    const logDir = join(__dirname, '../../logs');
     if (!existsSync(logDir)) {
-      mkdirSync(logDir);
+      mkdirSync(logDir, { recursive: true });
     }
     this.maxSize = parseInt(
       process.env.LOG_MAX_SIZE ?? String(DEFAULT_MAX_SIZE),
@@ -61,54 +66,42 @@ export class LoggingService extends ConsoleLogger {
     const stats = existsSync(filePath) ? statSync(filePath) : { size: 0 };
 
     if (stats.size >= this.maxSize) {
-        const archivedFilePath = filePath.replace('.log', `-${Date.now()}.log`);
-        renameSync(filePath, archivedFilePath);
+      const archivedFilePath = filePath.replace('.log', `-${Date.now()}.log`);
+      renameSync(filePath, archivedFilePath);
     }
     appendFileSync(filePath, `${new Date().toISOString()} - ${message}\n`);
   }
 
   log(message: string, context?: string) {
     if (!this.canLog('log')) return;
-    super.log(message, context)
-    this.writeLog(
-      this.commonFilePath,
-      `[LOG] ${message} ${context ?? ''}`,
-    );
+    super.log(message, context);
+    this.writeLog(this.commonFilePath, `[LOG] ${message} ${context ?? ''}`);
   }
 
   error(message: string, context?: string) {
     if (!this.canLog('error')) return;
-    super.error(message, context)
-    this.writeLog(
-      this.errorFilePath,
-      `[ERROR] ${message} ${context ?? ''}`,
-    );
+    super.error(message, context);
+    this.writeLog(this.errorFilePath, `[ERROR] ${message} ${context ?? ''}`);
   }
 
   warn(message: string, context?: string) {
     if (!this.canLog('warn')) return;
-    super.warn(message, context)
-    this.writeLog(
-      this.commonFilePath,
-      `[WARN] ${message} ${context ?? ''}`,
-    );
+    super.warn(message, context);
+    this.writeLog(this.commonFilePath, `[WARN] ${message} ${context ?? ''}`);
   }
 
   debug(message: string, context?: string) {
     if (!this.canLog('debug')) return;
     if (this.logLevelNum === 4) {
-      super.debug(message, context)
-      this.writeLog(
-        this.commonFilePath,
-        `[DEBUG] ${message} ${context ?? ''}`,
-      );
+      super.debug(message, context);
+      this.writeLog(this.commonFilePath, `[DEBUG] ${message} ${context ?? ''}`);
     }
   }
 
   verbose(message: string, context?: string) {
     if (!this.canLog('verbose')) return;
     if (this.logLevelNum === 5) {
-      super.verbose(message, context)
+      super.verbose(message, context);
       this.writeLog(
         this.commonFilePath,
         `[VERBOSE] ${message} ${context ?? ''}`,
@@ -118,9 +111,6 @@ export class LoggingService extends ConsoleLogger {
 
   fatal(message: string, context?: string) {
     if (!this.canLog('fatal')) return;
-    this.writeLog(
-      this.errorFilePath,
-      `[FATAL] ${message} ${context ?? ''}`,
-    );
+    this.writeLog(this.errorFilePath, `[FATAL] ${message} ${context ?? ''}`);
   }
 }
