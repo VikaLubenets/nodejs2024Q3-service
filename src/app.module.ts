@@ -5,6 +5,10 @@ import { FavoritesModule } from './modules/favorites/favorites.module';
 import { ArtistModule } from './modules/artist/artist.module';
 import { AlbumModule } from './modules/album/album.module';
 import { DatabaseModule } from './modules/database/database.module';
+import { AuthGuard } from './modules/auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthModule } from './modules/auth/auth.module';
+import { LoggingModule } from './modules/logging/logging.module';
 
 @Module({
   imports: [
@@ -14,6 +18,14 @@ import { DatabaseModule } from './modules/database/database.module';
     ArtistModule,
     AlbumModule,
     DatabaseModule,
+    AuthModule,
+    LoggingModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

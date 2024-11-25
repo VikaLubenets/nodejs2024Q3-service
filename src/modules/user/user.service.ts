@@ -56,4 +56,8 @@ export class UserService {
     await this.db.user.delete({ where: { id } });
     return true;
   }
+
+  async findByLogin(login: string) {
+    return this.db.user.findUnique({ where: { login } });
+  }
 }
