@@ -12,9 +12,17 @@ const ERROR_FILE_NAME = 'error.log';
 export class LoggingService extends ConsoleLogger {
   private logFilePath: string;
   private maxSize: number;
-  private logLevel: string;
+  private logLevelNum: number;
   private commonFilePath: string;
   private errorFilePath: string;
+  private logLevels: { [key: string]: number } = {
+    fatal: 0,
+    error: 1,
+    warn: 2,
+    log: 3,
+    debug: 4,
+    verbose: 5,
+  };
 
   constructor() {
     super()
@@ -25,7 +33,8 @@ export class LoggingService extends ConsoleLogger {
     this.maxSize = parseInt(
       process.env.LOG_MAX_SIZE ?? String(DEFAULT_MAX_SIZE),
     );
-    this.logLevel = process.env.LOG_LEVEL ?? 'log';
+    const envLogLevel = process.env.LOG_LEVEL ?? 'log';
+    this.logLevelNum = this.logLevels[envLogLevel] ?? this.logLevels.log;
     this.commonFilePath = join(logDir, COMMON_FILE_NAME);
     this.errorFilePath = join(logDir, ERROR_FILE_NAME);
     this.addErrorListeners();
@@ -44,10 +53,8 @@ export class LoggingService extends ConsoleLogger {
   }
 
   private canLog(level: string): boolean {
-    const levels = ['fatal', 'error', 'warn', 'log', 'debug', 'verbose'];
-    const currentLevelIndex = levels.indexOf(this.logLevel);
-    const messageLevelIndex = levels.indexOf(level);
-    return messageLevelIndex <= currentLevelIndex;
+    const levelValue = this.logLevels[level];
+    return levelValue !== undefined && levelValue <= this.logLevelNum;
   }
 
   private writeLog(filePath: string, message: string) {
@@ -89,7 +96,7 @@ export class LoggingService extends ConsoleLogger {
 
   debug(message: string, context?: string) {
     if (!this.canLog('debug')) return;
-    if (this.logLevel === 'debug') {
+    if (this.logLevelNum === 4) {
       super.debug(message, context)
       this.writeLog(
         this.commonFilePath,
@@ -100,7 +107,7 @@ export class LoggingService extends ConsoleLogger {
 
   verbose(message: string, context?: string) {
     if (!this.canLog('verbose')) return;
-    if (this.logLevel === 'verbose') {
+    if (this.logLevelNum === 5) {
       super.verbose(message, context)
       this.writeLog(
         this.commonFilePath,
