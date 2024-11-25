@@ -37,8 +37,8 @@ export class LoggingService extends ConsoleLogger {
       process.exit(1);
     });
 
-    process.on('unhandledRejection', (error: Error) => {
-      this.error(`[Unhandled Rejection] ${error.message}`);
+    process.on('unhandledRejection', (reason: string) => {
+      this.error(`[Unhandled Rejection] ${reason}`);
       process.exit(1);
     });
   }
