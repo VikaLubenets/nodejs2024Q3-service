@@ -7,12 +7,15 @@ import { readFile } from 'fs/promises';
 import { resolve } from 'path';
 import { cwd } from 'node:process';
 import { parse } from 'yaml';
+import { LoggingService } from './modules/logging/logging.service';
 
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const loggingService = app.get(LoggingService);
   app.useGlobalPipes(new ValidationPipe());
+  app.useLogger(loggingService);
 
   const document = await readFile(resolve(cwd(), 'doc', 'api.yaml'), {
     encoding: 'utf-8',

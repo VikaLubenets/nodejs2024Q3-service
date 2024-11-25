@@ -1,6 +1,5 @@
-import { HttpException, HttpStatus, Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable, ForbiddenException, ConflictException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
-import { DatabaseService } from '../database/database.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SignupDto } from './dto/signup.dto';
@@ -26,10 +25,7 @@ export class AuthService {
       return user;
     } catch (err) {
       if (err.code === 'P2002') {
-        throw new HttpException(
-          'User with this login has already been created',
-          HttpStatus.CONFLICT,
-        );
+        throw new ConflictException('User with this login has already been created');
       } else {
         console.error(err);
       }

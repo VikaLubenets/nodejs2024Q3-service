@@ -8,6 +8,7 @@ import { DatabaseModule } from './modules/database/database.module';
 import { AuthGuard } from './modules/auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './modules/auth/auth.module';
+import { LoggingModule } from './modules/logging/logging.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './modules/auth/auth.module';
     AlbumModule,
     DatabaseModule,
     AuthModule,
+    LoggingModule
   ],
   providers: [
     {
